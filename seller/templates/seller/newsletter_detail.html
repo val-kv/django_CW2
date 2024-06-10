@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ newsletter.title }}</title>
 </head>
 <body>
-$END$
+    <h1>{{ newsletter.title }}</h1>
+    <p>{{ newsletter.content }}</p>
+    <p>Sent on: {{ newsletter.sent_date }}</p>
+    <a href="{% url 'newsletter_update' newsletter.pk %}">Edit</a>
+    <a href="{% url 'newsletter_delete' newsletter.pk %}">Delete</a>
 </body>
 </html>

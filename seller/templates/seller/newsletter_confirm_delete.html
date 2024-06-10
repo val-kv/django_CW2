@@ -1,10 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Delete</title>
 </head>
 <body>
-$END$
+    <h1>Confirm Delete</h1>
+    <p>Are you sure you want to delete the newsletter "{{ newsletter.title }}"?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Yes</button>
+        <a href="{% url 'newsletter_detail' newsletter.pk %}">No</a>
+    </form>
 </body>
 </html>

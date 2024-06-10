@@ -1,10 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if newsletter %}Edit Newsletter{% else %}Create Newsletter{% endif %}</title>
 </head>
 <body>
-$END$
+    <h1>{% if newsletter %}Edit Newsletter{% else %}Create Newsletter{% endif %}</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">{% if newsletter %}Save{% else %}Create{% endif %}</button>
+    </form>
 </body>
 </html>

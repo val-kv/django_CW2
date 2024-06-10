@@ -1,10 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<h1>Главная страница</h1>
+
+<p>Количество рассылок: {{ num_newsletters }}</p>
+<p>Количество активных рассылок: {{ active_newsletters }}</p>
+<p>Количество уникальных клиентов: {{ num_unique_clients }}</p>
+
+<h2>Случайные статьи блога</h2>
+<ul>
+    {% for post in random_blog_posts %}
+        <li><a href="{% url 'blog_post_detail' post.id %}">{{ post.title }}</a></li>
+    {% endfor %}
+</ul>

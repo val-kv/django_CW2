@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <title>Панель управления менеджера</title>
 </head>
 <body>
-$END$
+    <h1>Панель управления менеджера</h1>
+    <p>Добро пожаловать, {{ user.username }}!</p>
+    <p>Вы авторизованы как менеджер.</p>
+    <p>Вы можете выполнять различные действия, связанные с управлением продуктами и рассылками.</p>
+    <a href="{% url 'catalog:product_list' %}">Просмотр продуктов</a>
+    <a href="{% url 'newsletter:newsletter_list' %}">Просмотр рассылок</a>
 </body>
 </html>

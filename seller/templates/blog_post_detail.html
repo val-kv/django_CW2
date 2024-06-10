@@ -1,10 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ blog_post.title }}</title>
 </head>
 <body>
-$END$
+    <h1>{{ blog_post.title }}</h1>
+    <p>{{ blog_post.content }}</p>
+    <p>Дата публикации: {{ blog_post.published_date }}</p>
+    <p>Автор: {{ blog_post.author }}</p>
+    <p>Просмотры: {{ blog_post.views }}</p>
 </body>
 </html>
