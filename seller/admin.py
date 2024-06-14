@@ -1,5 +1,7 @@
 from django.contrib import admin
-from .models import Newsletter, BlogPost
+
+from blog.models import BlogPost
+from .models import Newsletter
 
 
 @admin.register(BlogPost)

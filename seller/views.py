@@ -1,11 +1,11 @@
 from django.contrib.auth.decorators import login_required
 from django.views import View
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
-from .models import Newsletter, BlogPost
+from blog.models import BlogPost
+from .models import Newsletter
 from django.urls import reverse_lazy
-from django.shortcuts import render, redirect, get_object_or_404
-from .forms import CustomUserRegistrationForm
-from django.views.decorators.cache import cache_page
+from django.shortcuts import render, redirect
+from django.core.cache import cache
 
 
 class NewsletterListView(ListView):
@@ -55,18 +55,6 @@ class NewsletterDeleteView(DeleteView):
     success_url = reverse_lazy('newsletter_list')
 
 
-def register(request):
-    if request.method == 'POST':
-        form = CustomUserRegistrationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            user.is_active = False
-            return redirect('login')
-    else:
-        form = CustomUserRegistrationForm()
-    return render(request, 'registration/register.html', {'form': form})
-
-
 class ManagerDashboardView(View):
     def get(self, request):
         if not request.user.is_staff:
@@ -75,45 +63,14 @@ class ManagerDashboardView(View):
         return render(request, 'manager_dashboard.html')
 
 
-@cache_page(60 * 15)  # Кеширование на 15 минут
 def main_page(request):
-    num_newsletters = Newsletter.objects.count()
-    active_newsletters = Newsletter.objects.filter(status='active').count()
-    num_unique_clients = Newsletter.objects.values('owner').distinct().count()
-    random_blog_posts = BlogPost.objects.order_by('?')[:3]
-
-    context = {
-        'num_newsletters': num_newsletters,
-        'active_newsletters': active_newsletters,
-        'num_unique_clients': num_unique_clients,
-        'random_blog_posts': random_blog_posts,
-    }
-
-    return render(request, 'main_page.html', context)
-
-
-class BlogPostDetailView(DetailView):
-    model = BlogPost
-    template_name = 'blog_post_detail.html'
-    context_object_name = 'blog_post'
-
-    def get_object(self):
-        blog_post_id = self.kwargs.get('pk')
-        return get_object_or_404(BlogPost, pk=blog_post_id)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        blog_post = self.get_object()
-        blog_post.views += 1  # Increment the number of views
-        blog_post.save()
-        return context
-
-    def dispatch(self, request, *args, **kwargs):
-        if not request.user.groups.filter(name='manager').exists():
-            return redirect('home')  # Redirect to home page for non-manager users
-        return super().dispatch(request, *args, **kwargs)
-
-
-def blog_post_list(request):
-    blog_posts = BlogPost.objects.all()
-    return render(request, 'blog_post_list.html', {'blog_posts': blog_posts})
+    cached_content = cache.get('main_page_content')
+    if not cached_content:
+        blog_posts = BlogPost.objects.all()
+        cached_content = blog_posts
+        cache.set('blog_posts_content', cached_content, 60 * 60)  # Cache for 1 hour
+        newsletters = Newsletter.objects.all()
+        cached_content = newsletters
+        cache.set('newsletters_content', cached_content, 60 * 60)  # Cache for 1 hour
+    return render(request, 'main_page.html', {'blog_posts': cached_content},
+                  {'newsletters': cached_content})
